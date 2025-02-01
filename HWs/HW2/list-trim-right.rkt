@@ -1,0 +1,12 @@
+(define (list-trim-right xs)
+  (define (iter xs last cur)
+    (if(null? xs)
+       last
+       (if(and (char? (car xs)) (char-whitespace? (car xs)))
+          (iter (cdr xs) last (cons (car xs) cur))
+          (iter (cdr xs) (append last cur (list (car xs))) (list))
+          )
+       )
+    )
+  (iter xs (list) (list))
+  )
