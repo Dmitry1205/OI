@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+import sys
+keys={'-r': False,
+      '-u': False,
+      '-n': False,
+      '-i': False,
+      '-k': False}
+def ignore_spec_symb(string):
+	new_str=''
+	for i in string:
+		if(32<=ord(i)<=127):
+			new_str+=i
+	return new_str
+def print_sort_list(list_of_line):
+	if(keys['-u']):
+		list_of_line=sorted(set(list_of_line))
+	if(keys['-n']):
+		try:
+			list_of_line.sort(key=lambda x: int(x))
+		except:
+			print("Не все строки представляют собой числа", file=sys.stderr)
+			return 10
+	if(keys['-k']):
+		list_of_line.sort(key=lambda x: x.split()[keys['-k'][0]-1:keys['-k'][1]])	
+	if(keys['-i']):
+		list_of_line.sort(lambda x: ignore_spec_symb(x))
+	if(keys['-r']):
+		list_of_line.sort(reverse=True)
+	if(not(keys['-u'] or keys['-n'] or keys['-k'] or keys['-i'] or keys['-r'])):
+		list_of_line.sort()	
+	for line in list_of_line:
+		print(line)
+
+def process_stream(stream):
+	list_of_line=stream.read().rstrip().split('\n')
+	print_sort_list(list_of_line)
+def main():
+	list_of_line=[]
+	if(len(sys.argv)==1):
+		process_stream(sys.stdin)
+	else:	
+		is_k=False
+		is_file=False
+		for name in sys.argv[1:]:
+			if(is_k):
+				if(',' in name):
+					keys['-k']=tuple(map(int, name.split(',')))
+				else:
+					keys['-k']=tuple(int(name), int(name))
+				is_k=False
+				continue
+			if(name in keys):
+				keys[name]=True
+				if(name=='-k'):
+					is_k=True
+				continue
+			is_file=True
+			try:
+				with open(name, 'r') as file:
+					list_of_line+=file.read().split('\n')[:-1]		
+			except:
+				print(f"Не удалось открыть файл: {name}")
+		if(not(is_file)):
+			process_stream(sys.stdin)
+		else:
+			print_sort_list(list_of_line)
+if __name__=="__main__":
+	main()			
