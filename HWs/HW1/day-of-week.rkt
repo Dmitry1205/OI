@@ -1,0 +1,11 @@
+(define (day-of-week day month year)
+  (if(>= month 3)
+     (remainder (+ day (quotient (* 13 (+ month 1)) 5) (remainder year 100)
+        (quotient (remainder year 100) 4)
+        (quotient (quotient year 100) 4) (* -2 (quotient year 100)) 6) 7)
+     (remainder (+ day (quotient (* 13 (+ month 13)) 5) (remainder
+                                                         (- year 1) 100)
+        (quotient (remainder (- year 1) 100) 4)
+        (quotient (quotient (- year 1) 100) 4) (* -2 (quotient (- year 1) 100)) 6) 7)
+     )
+  )
