@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+import sys
+import re
+def main():
+	if(len(sys.argv)==1):
+		process_stream(sys.stdin)
+	else:
+		name_dict=sys.argv[1]
+		name_text=sys.argv[2]
+		dictionary=[]
+		text=''
+		with open(name_dict, 'r') as file:
+			dictionary=re.sub(r"[^\w\'\s]", '', file.read().lower()).split()
+		with open(name_text, 'r') as file:
+			text=file.read()
+		line=1
+		char=1
+		now_word=''
+		for symb in text:
+			if((symb.isspace() or symb in ',;.()!?+') and now_word!=''):
+				if(not(now_word.lower() in dictionary)):
+					print('{0:>3}, {1:>3} {2}'.format(line, \
+					char-len(now_word), now_word))
+				now_word=''
+			if(not(symb.isspace() or (symb in ',:.()!?+'))):
+				now_word=now_word+symb
+			char+=1
+			if(symb=='\n'):
+				line+=1
+				char=1
+				
+if __name__=="__main__":
+	main()		
