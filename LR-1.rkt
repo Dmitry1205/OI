@@ -1,8 +1,0 @@
-(define (my-even? x)
-  (if(even? x) #t #f))
-(define (my-remainder a b)
-  (if (> a b)
-     (my-remainder (- a b) b)
-     (+ a)))
-(define (my-abs x)
-  ((if(> x 0) + -) x))
