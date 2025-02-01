@@ -1,0 +1,42 @@
+;;1
+(define (count x xs)
+  (if(null? xs)
+     0
+     (if(eqv? (car xs) x)
+        (+ 1 (count x (cdr xs)))
+        (count x (cdr xs))
+        )
+     )
+  )
+;;2
+(define (take-while pred? xs)
+  (if(null? xs)
+     '()
+     (if(pred? (car xs))
+        (cons (car xs) (take-while pred? (cdr xs)))
+        '())
+     )
+  )
+;;3
+(define (iterate f x n)
+  (if(= n 0)
+     '()
+     (cons x (iterate f (f x) (- n 1))))
+  )
+;;4
+(define (interleave . xs)
+  (if(null? xs)
+     '()
+     (apply append (apply map list xs))
+  ))
+;;5
+(define (any? odd? xs)
+  (and (not (null? xs)) (or (odd? (car xs)) (any? odd? (cdr xs))))
+  )
+;;6
+(define (power f n)
+  (if(= n 0)
+     (lambda (x) x)
+     (lambda (y) (f ((power f (- n 1)) y)))
+     )
+  )
