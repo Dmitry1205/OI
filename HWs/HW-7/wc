@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+import sys
+
+def text_analizator(txt):
+	col_str=len(txt.split('\n'))-1
+	col_words=0
+	col_symb=len(txt)
+	col_bytes=len(txt.encode())
+	for line in txt.split('\n'):
+		col_words+=len(line.split())
+	return col_str, col_words, col_symb, col_bytes
+def process_stream(stream, key=None):
+	res=text_analizator(stream.read())
+	if(key=='-c'):
+		print('{0:>4}'.format(res[3]))
+	elif(key=='-m'):
+		print('{0:>4}'.format(res[2]))
+	elif(key=='-w'):
+		print('{0:>4}'.format(res[1]))
+	elif(key=='-l'):
+		print('{0:>4}'.format(res[0]))
+	else:
+		print('{0:>4} {1:>4} {2:>4}'.format(*res))
+def main():
+	if(len(sys.argv)==1):
+		process_stream(sys.stdin)
+	if(len(sys.argv)==2 and sys.argv[1] in ['-c', '-m', '-w', '-l']):
+		process_stream(sys.stdin, key=sys.argv[1])
+	else:
+		total_col_str=0
+		total_col_words=0
+		total_col_symb=0
+		total_col_bytes=0
+		start=1
+		if(sys.argv[1] in ['-c', '-m', '-w', '-l']):
+			start=2
+		for name in sys.argv[start:]:
+			try:
+				with open(name, 'r') as file:
+					res=text_analizator(file.read())
+					if(start==1):
+						print('{0:>4} {1:>4} {2:>4} {3}'.format(*res[:3], name))
+					elif(sys.argv[1]=='-c'):
+						print('{0:>4} {1}'.format(res[3], name))
+					elif(sys.argv[1]=='-m'):
+						print('{0:>4} {1}'.format(res[2], name))
+					elif(sys.argv[1]=='-w'):
+						print('{0:>4} {1}'.format(res[1], name))
+					elif(sys.argv[1]=='-l'):
+						print('{0:>4} {1}'.format(res[0], name))
+					total_col_str+=res[0]
+					total_col_words+=res[1]
+					total_col_symb+=res[2]
+					total_col_bytes+=res[3]
+			except:
+				print(f"Не удалось получить доступ к файлу: {name}", file=sys.stderr)
+		if(len(sys.argv)-start>1):
+			if(sys.argv[1]=='-c'):
+				print('{0:>4} {1}'.format(total_col_bytes, 'total'))
+			elif(sys.argv[1]=='-m'):
+				print('{0:>4} {1}'.format(total_col_symb, 'total'))
+			elif(sys.argv[1]=='-w'):
+				print('{0:>4} {1}'.format(total_col_words, 'total'))
+			elif(sys.argv[1]=='-l'):
+				print('{0:>4} {1}'.format(total_col_str, 'total'))
+			else:
+				print('{0:>4} {1:>4} {2:>4} {3}'.format(total_col_str, \
+				total_col_words, total_col_symb, 'total'))
+
+if __name__=="__main__":
+	main()
