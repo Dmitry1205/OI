@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+import os
+import sys
+start='.'
+keys={'-o': False, '-d': False}
+name_output='sys.stdout'
+if(len(sys.argv)>1):
+	for el in sys.argv:
+		if(keys['-o']):
+		    name_output=el
+		    keys['-o']=False
+		elif(el in keys):
+		    keys[el]=True
+		else:
+		    start=el
+l=sorted(os.listdir(start))
+print(start.split('/')[-1], file=(eval(name_output) \ 
+if (name_output=='sys.stdout') else open(name_output, 'w')))
+def rec(start, depth=0):
+	c=1
+	len_list=len(os.listdir(start))
+	for name in sorted(os.listdir(start)):
+		if(os.path.isdir(start+'/'+name)):
+			if(c!=len_list):
+				for mul in range(depth):
+					print('\u2502'+'\t', file=(eval(name_output) \
+					if (name_output=='sys.stdout') \
+					else open(name_output, 'a')), end='')
+				print('\u251C', name, file=(eval(name_output) \
+				if (name_output=='sys.stdout') \
+				else open(name_output, 'a')))
+			else:
+				for mul in range(depth):
+					print('\u2502'+'\t', end='', file=(eval(name_output) \
+					if (name_output=='sys.stdout') else open(name_output, 'a')))
+				print('\u251C', name, file=(eval(name_output) \ 
+				if (name_output=='sys.stdout') else open(name_output, 'a')))	
+			rec(start+'/'+name, depth+1)
+		else:
+			if(not(keys['-d'])):
+				if(c!=len_list):
+					for mul in range(depth):
+						print('\u2502'+'\t', end='', file=(eval(name_output) \
+						if (name_output=='sys.stdout') else open(name_output, 'a')))
+					print('\u251C', name, file=(eval(name_output) \
+					if (name_output=='sys.stdout') else open(name_output, 'a')))
+				else:
+					for mul in range(depth):
+						print('\u2502'+'\t', end='', file=(eval(name_output) \
+						if (name_output=='sys.stdout') else open(name_output, 'a')))
+					print('\u2514', name, file=(eval(name_output) \
+					if (name_output=='sys.stdout') else open(name_output, 'a')))
+		c+=1
+rec(start)
